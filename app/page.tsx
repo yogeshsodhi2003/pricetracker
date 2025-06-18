@@ -3,19 +3,31 @@
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { scrapeProduct } from "@/lib/action/productScraper";
+import { getUser } from "./action/getuser";
 
 const products = [
-  { name: "iPhone 15", src: "/iphone.jpg" },
-  { name: "Sony Headphones", src: "/headphones.jpg" },
-  { name: "Apple Watch", src: "/watch.jpg" },
-  { name: "MacBook Air", src: "/macbook.jpg" },
+  { name: "iPhone 15", src: "https://images.unsplash.com/photo-1688649593308-40dfbb552d00?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aSUyMHBob25lJTIwMTV8ZW58MHx8MHx8fDA%3D" },
+  { name: "Sony Headphones", src: "https://plus.unsplash.com/premium_photo-1678099940967-73fe30680949?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c29ueSUyMGhlYWRwaG9uZXxlbnwwfHwwfHx8MA%3D%3D" },
+  { name: "Apple Watch", src: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXBwbGUlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D" },
+  { name: "MacBook Air", src: "https://images.unsplash.com/photo-1620365602462-40d8f2cdd84c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1hYyUyMGJvb2t8ZW58MHx8MHx8fDA%3D" },
 ];
 
-export default function HomePage() {
+export default  function HomePage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+
+
+  useEffect(()=>{
+    const getData = async()=>{
+    const user = await getUser();
+    }
+    getData()
+  },[])
+  
+
+
 
  function getDomainType(url: string): 
   | "amazon"

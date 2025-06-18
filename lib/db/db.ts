@@ -1,30 +1,24 @@
-// lib/mongodb.ts
-import { MongoClient } from "mongodb";
+// lib/mongoose.ts
+import mongoose from "mongoose";
 
-if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your MongoDB URI to .env.local");
+const mongouri = process.env.MONGODB_URI!;
+
+if (!mongouri) {
+  throw new Error("Please define the MONGODB_URI environment variable");
 }
 
-const uri = process.env.MONGODB_URI;
-const options = {};
+let isConnected = false;
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+export async function connectToDB() {
+  if (isConnected) return;
 
-// Reuse client in dev to avoid hot reload problems
-declare global {
-  var _mongoClientPromise: Promise<MongoClient>;
-}
-
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri!, options);
-    global._mongoClientPromise = client.connect();
+  try {
+    await mongoose.connect(mongouri, {
+      dbName: "pricetrackr",
+    });
+    isConnected = true;
+    console.log("✅ MongoDB connected with Mongoose");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  client = new MongoClient(uri!, options);
-  clientPromise = client.connect();
 }
-
-export default clientPromise;
