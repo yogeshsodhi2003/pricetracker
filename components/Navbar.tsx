@@ -1,8 +1,21 @@
 // components/Navbar.tsx
+'use client'
+import { useSession, signIn, signOut } from "next-auth/react"
+import { Button } from "./ui/button";
+import Image from 'next/image';
+
+
+
+
 
 import { Search, User } from "lucide-react";
 
-export default function Navbar() {
+export default  function Navbar() {
+    const { data: session } = useSession()
+    
+    const avatar = session?.user.image
+
+  
   return (
     <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center">
       {/* Logo */}
@@ -12,7 +25,7 @@ export default function Navbar() {
 
       {/* Icons */}
       <div className="flex items-center gap-4">
-        {/* Search Icon */}
+        {/* Search Icon */} 
         <button className="text-gray-600 hover:text-black transition">
           <Search size={20} />
         </button>
@@ -21,6 +34,14 @@ export default function Navbar() {
         <button className="text-gray-600 hover:text-black transition">
           <User size={20} />
         </button>
+            <div>
+      {session?.user ? (
+        
+        <Image src={`${avatar}`} width={30} height={30} alt="profile" className="rounded-full cursor-pointer" />
+      ) : (
+        <Button onClick={()=>signIn()}>sign in</Button>
+      )}
+    </div>
       </div>
     </nav>
   );
