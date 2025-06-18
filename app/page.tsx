@@ -1,103 +1,144 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Search } from "lucide-react";
 import Image from "next/image";
+import { FormEvent, useState } from "react";
+import { scrapeProduct } from "@/lib/action/productScraper";
 
-export default function Home() {
+const products = [
+  { name: "iPhone 15", src: "/iphone.jpg" },
+  { name: "Sony Headphones", src: "/headphones.jpg" },
+  { name: "Apple Watch", src: "/watch.jpg" },
+  { name: "MacBook Air", src: "/macbook.jpg" },
+];
+
+export default function HomePage() {
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+
+ function getDomainType(url: string): 
+  | "amazon"
+  | "flipkart"
+  | "meesho"
+  | "myntra"
+  | "ajio"
+  | "snapdeal"
+  | "croma"
+  | "tatacliq"
+  | "other" {
+  try {
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname.toLowerCase();
+
+    if (hostname.includes("amazon.")) return "amazon";
+    if (hostname.includes("flipkart.")) return "flipkart";
+    if (hostname.includes("meesho.")) return "meesho";
+    if (hostname.includes("myntra.")) return "myntra";
+    if (hostname.includes("ajio.")) return "ajio";
+    if (hostname.includes("snapdeal.")) return "snapdeal";
+    if (hostname.includes("croma.")) return "croma";
+    if (hostname.includes("tatacliq.")) return "tatacliq";
+
+    return "other";
+  } catch (err) {
+    alert("Please enter a valid URL");
+    return "other";
+  }
+}
+
+
+  const handleSearch = async(e : FormEvent) =>{
+    e.preventDefault()
+    const domian =  getDomainType(search)
+    if(domian == 'other'){
+      alert("Please enter a valid URL")
+    }
+    try{
+       setLoading(true)
+       scrapeProduct(search, domian)
+      
+    }catch(error){
+      alert("Please enter a valid URL")
+    }finally{
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="min-h-screen bg-white px-6 py-16 flex flex-col items-center text-center">
+      {/* Heading */}
+      <motion.h1
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="text-4xl md:text-5xl font-bold text-black mb-4"
+      >
+        Track Prices. Save Smarter.
+      </motion.h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Paragraph */}
+      <motion.p
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+        className="text-gray-600 max-w-xl mb-10"
+      >
+        Get real-time updates and price drop alerts on your favorite products
+        from across the web. Just search, sit back, and let the savings come to
+        you.
+      </motion.p>
+
+      {/* Search Bar */}
+      <motion.form
+        onSubmit={handleSearch}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="flex w-full max-w-lg border border-gray-300 rounded-full px-4 py-2 shadow-sm items-center mb-16"
+      >
+        <Search className="text-gray-500 mr-2" size={20} />
+        <input
+          type="text"
+          value={search}
+          placeholder="Search for a product..."
+          className="flex-1 outline-none bg-transparent text-gray-800 placeholder-gray-400"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="bg-black text-white text-sm px-4 py-2 rounded-full hover:bg-gray-900 transition"
+        >
+          {loading? "searching" : "Search"}
+        </button>
+      </motion.form>
+
+      {/* Product Images */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-6"
+      >
+        {products.map((product, index) => (
+          <motion.div
+            key={index}
+            whileHover={{ scale: 1.05 }}
+            className="rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all"
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src={product.src}
+              alt={product.name}
+              width={200}
+              height={200}
+              className="w-full object-cover"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <div className="p-2 text-sm font-medium text-gray-800">
+              {product.name}
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+    </main>
   );
 }
