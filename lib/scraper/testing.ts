@@ -2,7 +2,7 @@
 import puppeteer from 'puppeteer';
 import { ProductData } from '@/types/productData';
 
-export async function scrapeMeeshoProduct(url: string): Promise<ProductData> {
+export async function scrapetesting(url: string): Promise<ProductData> {
   const browser = await puppeteer.launch({
     headless: true
   });
@@ -16,14 +16,16 @@ export async function scrapeMeeshoProduct(url: string): Promise<ProductData> {
   await page.goto(url, { waitUntil: 'domcontentloaded' });
 
   // Wait for price or any key element
-  await page.waitForSelector('h1', { timeout: 10000 });
+  await page.waitForSelector('div.caption', { timeout: 10000 });
 
   const data = await page.evaluate(() => {
-    const title = document.querySelector('h1')?.textContent?.trim() || '';
-    const priceText = document.querySelector('h4')?.textContent?.trim() || '';
-    const image = document.querySelector('img')?.getAttribute('src') || '';
-
-    const price = Number(priceText.replace(/[^\d]/g, ''));
+    const title = document.querySelector('h4.title')?.textContent?.trim() || '';
+    const priceText = document.querySelector('h4[itemprop="offers"] span[itemprop="price"]')?.textContent?.trim() || '';
+    const imagesrc = document.querySelector('img.image')?.getAttribute('src') || '';
+    console.log(priceText)
+   const image = "https://webscraper.io" + imagesrc
+    const price  = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+    
 
     return { title, price, image };
   });
@@ -32,7 +34,10 @@ export async function scrapeMeeshoProduct(url: string): Promise<ProductData> {
 
   return {
     ...data,
-    url,
-    source: 'meesho',
+    url,  
+    source: 'test',
   };
 }
+
+
+

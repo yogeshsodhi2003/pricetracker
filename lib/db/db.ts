@@ -1,15 +1,16 @@
 // lib/mongoose.ts
+'use server'
 import mongoose from "mongoose";
-
-const mongouri = process.env.MONGODB_URI!;
-
-if (!mongouri) {
-  throw new Error("Please define the MONGODB_URI environment variable");
-}
 
 let isConnected = false;
 
 export async function connectToDB() {
+  const mongouri = process.env.MONGODB_URI!;
+
+  if (!mongouri) {
+    throw new Error("Please define the MONGODB_URI environment variable");
+  }
+
   if (isConnected) return;
 
   try {

@@ -5,6 +5,7 @@ export async function scrapeSnapdealProduct(url: string): Promise<ProductData> {
   const browser = await puppeteer.launch({
     headless: true
   });
+  console.log(url)
   const page = await browser.newPage();
     await page.setUserAgent(
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
@@ -12,9 +13,9 @@ export async function scrapeSnapdealProduct(url: string): Promise<ProductData> {
   );
   await page.goto(url, { waitUntil: "domcontentloaded" });
 
-  await page.waitForSelector("h1.pdp-e-i-head", { timeout: 10000 });
+  await page.waitForSelector("h1", { timeout: 10000 });
 
-  const data = await page.evaluate(() => {
+
     const title =
       document.querySelector("h1.pdp-e-i-head")?.textContent?.trim() || "";
     const priceText =
@@ -22,9 +23,9 @@ export async function scrapeSnapdealProduct(url: string): Promise<ProductData> {
     const image =
       document.querySelector("img.cloudzoom")?.getAttribute("src") || "";
     const price = Number(priceText.replace(/[^\d]/g, ""));
-    return { title, price, image };
-  });
-
+  
+  
+  console.log("this is working",title)
   await browser.close();
-  return { ...data, url, source: "snapdeal" };
+  return { title, price , image, url, source: "snapdeal" };
 }

@@ -5,6 +5,18 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { User } from "@/models/user.model";
 
+
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    }
+  }
+}
+
 export const authOptions: NextAuthOptions = {
    secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -21,6 +33,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({user}){
         const existingUser = await User.findOne({ email : user.email});
+        console.log("this is working")
         if(!existingUser){
            const newUser = new User({
             name: user.name,
@@ -43,7 +56,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
+      session.accessToken = token.accessToken as string;
       return session;
     },
   },

@@ -4,5 +4,5 @@ export type ProductData = {
   price: number;
   image: string;
   url: string;
-  source: 'amazon' | 'flipkart' | 'meesho' | 'myntra' | 'ajio' |'snapdeal' | 'croma' | 'tatacliq';
+  source: 'amazon' | 'flipkart' | 'meesho' | 'myntra' | 'ajio' |'snapdeal' | 'croma' | 'tatacliq' | 'test';
 };

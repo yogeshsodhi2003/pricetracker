@@ -7,52 +7,54 @@ import { scrapeMyntraProduct } from '@/lib/scraper/myntra';
 import { scrapeTataCliqProduct } from '@/lib/scraper/tatacliq';
 import { scrapeCromaProduct } from '@/lib/scraper/croma';
 import { scrapeSnapdealProduct } from '@/lib/scraper/snapdeal';
+import { scrapetesting } from '../scraper/testing';
 
 export async function scrapeProduct(productUrl: string, domain: string) {
     if(!productUrl) return;
 try{
-    const domain = new URL(productUrl).hostname;
 
 let scrapedData;
 
-switch (true) {
-  case /amazon\./.test(domain):
+switch (domain.toLowerCase()) {
+   case "test":
+    scrapedData = await scrapetesting(productUrl);
+    break;
+  case 'amazon':
     scrapedData = await scrapeAmazonProduct(productUrl);
     break;
 
-  case /flipkart\./.test(domain):
+  case 'flipkart':
     scrapedData = await scrapeFlipkartProduct(productUrl);
     break;
 
-  case /meesho\./.test(domain):
+  case 'meesho':
     scrapedData = await scrapeMeeshoProduct(productUrl);
     break;
 
-  case /myntra\./.test(domain):
+  case 'myntra':
     scrapedData = await scrapeMyntraProduct(productUrl);
     break;
 
-  case /ajio\./.test(domain):
+  case 'ajio':
     scrapedData = await scrapeAjioProduct(productUrl);
     break;
 
-  case /snapdeal\./.test(domain):
+  case 'snapdeal':
     scrapedData = await scrapeSnapdealProduct(productUrl);
     break;
 
-  case /croma\./.test(domain):
+  case 'croma':
     scrapedData = await scrapeCromaProduct(productUrl);
     break;
 
-  case /tatacliq\./.test(domain):
+  case 'tatacliq':
     scrapedData = await scrapeTataCliqProduct(productUrl);
     break;
 
   default:
     throw new Error(`Unsupported domain: ${domain}`);
 }
-
-console.log(scrapedData);
+return scrapedData;
 
 }
 catch(error: any){

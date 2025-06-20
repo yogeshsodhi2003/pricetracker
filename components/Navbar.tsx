@@ -3,6 +3,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Search, User } from "lucide-react";
 
@@ -14,9 +15,11 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-white shadow-sm px-6 py-4 flex justify-between items-center">
       {/* Logo */}
+      <Link href="/">
       <div className="text-xl font-bold tracking-tight text-black">
         PriceTrackr
       </div>
+      </Link>
 
       {/* Icons */}
       <div className="flex items-center gap-4">

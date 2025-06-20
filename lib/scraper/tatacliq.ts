@@ -12,14 +12,14 @@ export async function scrapeTataCliqProduct(url: string): Promise<ProductData> {
   );
   await page.goto(url, { waitUntil: "domcontentloaded" });
 
-  await page.waitForSelector("h1.Title__TitleText-sc-1k1z1d2-0", {
+  await page.waitForSelector("div.ProductDescriptionPage__cardHeaderHolder", {
     timeout: 10000,
   });
 
   const data = await page.evaluate(() => {
     const title =
       document
-        .querySelector("h1.Title__TitleText-sc-1k1z1d2-0")
+        .querySelector("h1.ProductDetailsMainCard__productName")
         ?.textContent?.trim() || "";
     const priceText =
       document
@@ -30,6 +30,7 @@ export async function scrapeTataCliqProduct(url: string): Promise<ProductData> {
         .querySelector("img.Image__StyledImage-sc-1as2s8r-1")
         ?.getAttribute("src") || "";
     const price = Number(priceText.replace(/[^\d]/g, ""));
+    console.log(title)
     return { title, price, image };
   });
 

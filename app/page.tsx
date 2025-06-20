@@ -5,77 +5,95 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { scrapeProduct } from "@/lib/action/productScraper";
-import { getUser } from "./action/getuser";
+import { useRouter } from "next/navigation";
+import { connectToDB } from "@/lib/db/db";
+import { sendmailtest } from "@/lib/action/sendmail";
 
 const products = [
-  { name: "iPhone 15", src: "https://images.unsplash.com/photo-1688649593308-40dfbb552d00?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aSUyMHBob25lJTIwMTV8ZW58MHx8MHx8fDA%3D" },
-  { name: "Sony Headphones", src: "https://plus.unsplash.com/premium_photo-1678099940967-73fe30680949?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c29ueSUyMGhlYWRwaG9uZXxlbnwwfHwwfHx8MA%3D%3D" },
-  { name: "Apple Watch", src: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXBwbGUlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D" },
-  { name: "MacBook Air", src: "https://images.unsplash.com/photo-1620365602462-40d8f2cdd84c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1hYyUyMGJvb2t8ZW58MHx8MHx8fDA%3D" },
+  {
+    name: "iPhone 15",
+    src: "https://images.unsplash.com/photo-1688649593308-40dfbb552d00?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aSUyMHBob25lJTIwMTV8ZW58MHx8MHx8fDA%3D",
+  },
+  {
+    name: "Sony Headphones",
+    src: "https://plus.unsplash.com/premium_photo-1678099940967-73fe30680949?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c29ueSUyMGhlYWRwaG9uZXxlbnwwfHwwfHx8MA%3D%3D",
+  },
+  {
+    name: "Apple Watch",
+    src: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXBwbGUlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
+  },
+  {
+    name: "MacBook Air",
+    src: "https://images.unsplash.com/photo-1620365602462-40d8f2cdd84c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG1hYyUyMGJvb2t8ZW58MHx8MHx8fDA%3D",
+  },
 ];
 
-export default  function HomePage() {
+export default function HomePage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+ 
 
 
-  useEffect(()=>{
-    const getData = async()=>{
-    const user = await getUser();
-    }
-    getData()
+
+  useEffect(() =>{
+       connectToDB()
   },[])
-  
 
 
 
- function getDomainType(url: string): 
-  | "amazon"
-  | "flipkart"
-  | "meesho"
-  | "myntra"
-  | "ajio"
-  | "snapdeal"
-  | "croma"
-  | "tatacliq"
-  | "other" {
-  try {
-    const parsedUrl = new URL(url);
-    const hostname = parsedUrl.hostname.toLowerCase();
+  function getDomainType(
+    url: string
+  ):
+    | "amazon"
+    | "flipkart"
+    | "meesho"
+    | "myntra"
+    | "ajio"
+    | "snapdeal"
+    | "croma"
+    | "tatacliq"
+    | "test"
+    | "other" {
+    try {
+      const parsedUrl = new URL(url);
+      const hostname = parsedUrl.hostname.toLowerCase();
 
-    if (hostname.includes("amazon.")) return "amazon";
-    if (hostname.includes("flipkart.")) return "flipkart";
-    if (hostname.includes("meesho.")) return "meesho";
-    if (hostname.includes("myntra.")) return "myntra";
-    if (hostname.includes("ajio.")) return "ajio";
-    if (hostname.includes("snapdeal.")) return "snapdeal";
-    if (hostname.includes("croma.")) return "croma";
-    if (hostname.includes("tatacliq.")) return "tatacliq";
-
-    return "other";
-  } catch (err) {
-    alert("Please enter a valid URL");
-    return "other";
-  }
-}
-
-
-  const handleSearch = async(e : FormEvent) =>{
-    e.preventDefault()
-    const domian =  getDomainType(search)
-    if(domian == 'other'){
-      alert("Please enter a valid URL")
-    }
-    try{
-       setLoading(true)
-       scrapeProduct(search, domian)
-      
-    }catch(error){
-      alert("Please enter a valid URL")
-    }finally{
-      setLoading(false)
+      if (hostname.includes("amazon.")) return "amazon";
+      if (hostname.includes("flipkart.")) return "flipkart";
+      if (hostname.includes("meesho.")) return "meesho";
+      if (hostname.includes("myntra.")) return "myntra";
+      if (hostname.includes("ajio.")) return "ajio";
+      if (hostname.includes("snapdeal.")) return "snapdeal";
+      if (hostname.includes("croma.")) return "croma";
+      if (hostname.includes("tatacliq.")) return "tatacliq";
+      if (hostname.includes("webscraper.io")) return "test";
+      return "other";
+    } catch (err) {
+      alert("Please enter a valid URL");
+      return "other";
     }
   }
+
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    const domian = getDomainType(search);
+    if (domian == "other") {
+      alert("Please enter a valid URL");
+    }
+    try {
+      setLoading(true);
+      const data = await scrapeProduct(search, domian);
+      const encoded = encodeURIComponent(JSON.stringify(data))
+
+      router.push(`/product/product?data=${encoded}`);
+    } catch (error) {
+      alert("Please enter a valid URL");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-white px-6 py-16 flex flex-col items-center text-center">
@@ -121,7 +139,7 @@ export default  function HomePage() {
           type="submit"
           className="bg-black text-white text-sm px-4 py-2 rounded-full hover:bg-gray-900 transition"
         >
-          {loading? "searching" : "Search"}
+          {loading ? "searching" : "Search"}
         </button>
       </motion.form>
 
