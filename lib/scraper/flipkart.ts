@@ -18,14 +18,13 @@
 
       // Flipkart often uses this class for price
          const title = $('span.VU-ZEz').text().trim();
-    const priceText = $('div._30jeq3._16Jk6d').first().text().replace(/[^\d]/g, '');
-    const image = $('img._396cs4._2amPTt._3qGmMb').attr('src');
+
       const price = $('div[class*="Nx9bqj"]' ).first().text();
       console.log("this is working" ,title)
       console.log(price)
 
       return title;
-    } catch (error) {
+    } catch {
       throw new Error("error scraping flipkart product");
     }
   }

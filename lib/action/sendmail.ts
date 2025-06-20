@@ -2,17 +2,25 @@
 
 import { sendMail } from "@/lib/mailer/mailer";
 
+type MailData = {
+ email : string
+ title : string
+ url : string
+ targetPrice : number
+  
+}
 
-export async function sendmailtest() {
+export async function sendmailtest(product : MailData) {
+  console.log(product)
     console.log("trying to send mail");
     try{
   await sendMail({
-    to: "yogeshsodhi88@gmail.com",
+    to: product.email,
     subject: "📉 Price Dropped!",
     html: `
-  <h1> this is a testing </h1>
-    <h2>Yo! Your product is cheaper 🎉</h2>
-    <p>The price dropped below your target. <a href="https://amazon.in/product-url">Check it here</a></p>
+
+    <h2>Yo! Your product ${product.title} is cheaper 🎉</h2>
+    <p>The price dropped below your target. <a href=${product.url}>Check it here</a></p>
   `,
   });
 }catch{

@@ -3,11 +3,9 @@
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { scrapeProduct } from "@/lib/action/productScraper";
 import { useRouter } from "next/navigation";
-import { connectToDB } from "@/lib/db/db";
-import { sendmailtest } from "@/lib/action/sendmail";
 
 const products = [
   {
@@ -32,16 +30,6 @@ export default function HomePage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
- 
-
-
-
-  useEffect(() =>{
-       connectToDB()
-  },[])
-
-
 
   function getDomainType(
     url: string
@@ -70,7 +58,7 @@ export default function HomePage() {
       if (hostname.includes("tatacliq.")) return "tatacliq";
       if (hostname.includes("webscraper.io")) return "test";
       return "other";
-    } catch (err) {
+    } catch  {
       alert("Please enter a valid URL");
       return "other";
     }
@@ -85,10 +73,10 @@ export default function HomePage() {
     try {
       setLoading(true);
       const data = await scrapeProduct(search, domian);
-      const encoded = encodeURIComponent(JSON.stringify(data))
+      const encoded = encodeURIComponent(JSON.stringify(data));
 
       router.push(`/product/product?data=${encoded}`);
-    } catch (error) {
+    } catch  {
       alert("Please enter a valid URL");
     } finally {
       setLoading(false);

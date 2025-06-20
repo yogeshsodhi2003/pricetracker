@@ -4,10 +4,29 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { pricechecker } from "@/lib/priceChecker/priceChecker";
 
 import { Search, User } from "lucide-react";
 
 export default function Navbar() {
+
+
+
+
+ const handletest = () =>{
+  pricechecker()
+ }
+  
+
+
+
+
+
+
+
+
+
+
   const { data: session } = useSession();
 
   const avatar = session?.user.image;
@@ -20,6 +39,7 @@ export default function Navbar() {
         PriceTrackr
       </div>
       </Link>
+      <button onClick={handletest}>testpricechecker</button>
 
       {/* Icons */}
       <div className="flex items-center gap-4">
