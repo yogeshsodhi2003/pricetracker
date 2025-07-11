@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, models, model } from 'mongoose';
+import mongoose, { Schema, Document, models, model } from "mongoose";
 
 export interface IProduct extends Document {
   title: string;
@@ -27,6 +27,6 @@ const ProductSchema = new Schema<IProduct>(
 );
 
 // Prevent model overwrite in dev
-const Product = models.Product || model<IProduct>('Product', ProductSchema);
+const Product = models.Product || model<IProduct>("Product", ProductSchema);
 
 export default Product;
